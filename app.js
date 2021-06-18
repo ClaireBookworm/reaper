@@ -147,11 +147,13 @@ client.on("message", async (m) => {
           return { did: person.get("Tag"), points: person.get("Points") };
         });
 
-        people.sort((a, b) => a.points - b.points);
+        people.sort((a, b) => b.points - a.points);
 
-        m.channel.send(`LEADERBOARD:
-        
-        ${people.map((v) => `<@${v.did}>: ${v.points}\n`).join("")}`);
+        m.channel.send(
+          `LEADERBOARD:\n\n${people
+            .map((v, i) => `#${i + 1}) <@${v.did}>: ${v.points}\n`)
+            .join("")}`
+        );
         break;
     }
   }

@@ -9,6 +9,14 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_KEY }).base(
 const client = new Discord.Client();
 
 client.on("ready", () => {
+  client.user.setPresence({
+    status: "online",
+    game: {
+      name: "!reaphelp",
+      type: "PLAYING",
+    },
+  });
+
   console.log(`Logged in as ${client.user.tag}!`);
 });
 

@@ -1,5 +1,7 @@
 # Reaper
 
+[Add me to your server](https://discord.com/oauth2/authorize?client_id=855234973341319208&scope=bot&permissions=379968)
+
 Quick discord bot put together to play the game
 
 Check out rules at https://artofproblemsolving.com/reaper

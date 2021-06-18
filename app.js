@@ -23,6 +23,24 @@ const getReapChannel = async (id) => {
   return records[0].get("Channel");
 };
 
+const getBoard = async (m) => {
+  let people = await base("People")
+    .select({
+      filterByFormula: `{GuildID}='${m.guild.id}'`,
+    })
+    .all();
+
+  people = people.map((person) => {
+    return { did: person.get("Tag"), points: person.get("Points") };
+  });
+
+  people.sort((a, b) => b.points - a.points);
+
+  return `LEADERBOARD:\n\n${people
+    .map((v, i) => `#${i + 1}) <@${v.did}>: ${v.points}\n`)
+    .join("")}`;
+};
+
 client.on("message", async (m) => {
   if (m.content == "!setchannel") {
     let records = await base("Guilds")
@@ -35,6 +53,7 @@ client.on("message", async (m) => {
             GuildID: m.guild.id,
             Time: Date.now() / 1000,
             Channel: m.channel.id,
+            WinCount: 2000000,
           },
         },
       ]);
@@ -47,12 +66,20 @@ client.on("message", async (m) => {
       Guild2Channel[m.guild.id] = m.channel.id;
       m.reply(`Set the reaper channel to <#${m.channel.id}>`);
     }
+  } else if (m.content.substr(0, 7) == "!setwin") {
+    let records = await base("Guilds")
+      .select({ filterByFormula: `{GuildID}='${m.guild.id}'` })
+      .all();
+    await records[0].updateFields({
+      WinCount: Number(m.content.substr(8)),
+    });
+    m.reply(`Set win wall to ${Number(m.content.substr(8))}`);
   }
-
   if ((await getReapChannel(m.guild.id)) == m.channel.id) {
     switch (m.content.toLowerCase()) {
       case "reap":
         let now = Math.floor(Date.now() / 1000);
+        let newNumber = 0;
         let person = await base("People")
           .select({ filterByFormula: `{Tag}='${m.author.id}'` })
           .all();
@@ -60,7 +87,7 @@ client.on("message", async (m) => {
           let guild = await base("Guilds")
             .select({ filterByFormula: `{GuildID}='${m.guild.id}'` })
             .all();
-          let newNumber = now - guild[0].get("Time");
+          newNumber = now - guild[0].get("Time");
           await base("People").create([
             {
               fields: {
@@ -90,8 +117,7 @@ client.on("message", async (m) => {
             );
             return;
           }
-          let newNumber =
-            person[0].get("Points") + (now - person[0].get("Time"));
+          newNumber = person[0].get("Points") + (now - person[0].get("Time"));
           person[0].updateFields({
             Points: newNumber,
             Last: now,
@@ -109,6 +135,19 @@ client.on("message", async (m) => {
             `REAPPPEEDDDD!!! You now have ${Math.floor(newNumber)} points`
           );
         }
+
+        if (person.length > 0 && newNumber > person[0].get("WinCount")) {
+          //m.reply("CONGRATS YOU WONNNNNNN!! The final rankings are:\n\n");
+          //m.channel.send(await getBoard(m));
+
+          let people = await base("People")
+            .select({
+              filterByFormula: `{GuildID}='${m.guild.id}'`,
+            })
+            .all();
+          people.forEach((p) => p.destroy());
+        }
+
         break;
       case "timer":
         let guild = await base("Guilds")
@@ -137,23 +176,7 @@ client.on("message", async (m) => {
       case "start":
         break;
       case "leaderboard":
-        let people = await base("People")
-          .select({
-            filterByFormula: `{GuildID}='${m.guild.id}'`,
-          })
-          .all();
-
-        people = people.map((person) => {
-          return { did: person.get("Tag"), points: person.get("Points") };
-        });
-
-        people.sort((a, b) => b.points - a.points);
-
-        m.channel.send(
-          `LEADERBOARD:\n\n${people
-            .map((v, i) => `#${i + 1}) <@${v.did}>: ${v.points}\n`)
-            .join("")}`
-        );
+        m.channel.send(await getBoard(m));
         break;
     }
   }

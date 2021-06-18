@@ -50,7 +50,7 @@ client.on("message", async (m) => {
   }
 
   if ((await getReapChannel(m.guild.id)) == m.channel.id) {
-    switch (m.content) {
+    switch (m.content.toLowerCase()) {
       case "reap":
         let now = Math.floor(Date.now() / 1000);
         let person = await base("People")

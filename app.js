@@ -74,7 +74,24 @@ client.on("message", async (m) => {
       WinCount: Number(m.content.substr(8)),
     });
     m.reply(`Set win wall to ${Number(m.content.substr(8))}`);
+  } else if (m.content == "!reaphelp") {
+    m.reply(`
+      Help for Reaper:
+
+      Check out rules at https://artofproblemsolving.com/reaper
+
+      \`!reaphelp\` - See this message
+      \`!setchannel\` - Send the channel to where you want reaper initialized
+      \`!setwin 12389\` - Sets win wall to win (ie, if you pass it, you win and it resets)
+
+      ONLY IN REAPER CHANNEL:
+      \`reap\` - Run to reap time
+      \`timer\` - Check current time that you can reap
+      \`rank\` - Check your points
+      \`leaderboard\` - Check server leaderboard for points
+    `);
   }
+
   if ((await getReapChannel(m.guild.id)) == m.channel.id) {
     switch (m.content.toLowerCase()) {
       case "reap":

@@ -83,11 +83,12 @@ client.on("message", async (m) => {
         let person = await base("People")
           .select({ filterByFormula: `{Tag}='${m.author.id}'` })
           .all();
+        let mult = Math.floor(Math.random() * 5 + 1);
         if (person.length == 0) {
           let guild = await base("Guilds")
             .select({ filterByFormula: `{GuildID}='${m.guild.id}'` })
             .all();
-          newNumber = now - guild[0].get("Time");
+          newNumber = (now - guild[0].get("Time")) * mult;
           await base("People").create([
             {
               fields: {
@@ -104,7 +105,9 @@ client.on("message", async (m) => {
           });
 
           m.reply(
-            `REAPPPEEDDDD!!! You now have ${Math.floor(newNumber)} points`
+            `REAPPPEEDDDD!!! You now have ${Math.floor(
+              newNumber
+            )} points, and got a ${mult}x reap`
           );
         } else {
           if (now - person[0].get("Last") < 43200) {
@@ -117,7 +120,8 @@ client.on("message", async (m) => {
             );
             return;
           }
-          newNumber = person[0].get("Points") + (now - person[0].get("Time"));
+          newNumber =
+            person[0].get("Points") + (now - person[0].get("Time")) * mult;
           person[0].updateFields({
             Points: newNumber,
             Last: now,
@@ -132,7 +136,9 @@ client.on("message", async (m) => {
           ]);
 
           m.reply(
-            `REAPPPEEDDDD!!! You now have ${Math.floor(newNumber)} points`
+            `REAPPPEEDDDD!!! You now have ${Math.floor(
+              newNumber
+            )} points and got a ${mult}x reap`
           );
         }
 

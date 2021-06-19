@@ -108,7 +108,9 @@ client.on("message", async (m) => {
         let now = Math.floor(Date.now() / 1000);
         let newNumber = 0;
         let person = await base("People")
-          .select({ filterByFormula: `{Tag}='${m.author.id}'` })
+          .select({
+            filterByFormula: `{ID}='${m.author.id + "-" + m.guild.id}'`,
+          })
           .all();
         let mult = Math.floor(Math.random() * 5 + 1);
         if (person.length == 0) {
@@ -194,7 +196,9 @@ client.on("message", async (m) => {
         break;
       case "rank":
         let checkPerson = await base("People")
-          .select({ filterByFormula: `{Tag}='${m.author.id}'` })
+          .select({
+            filterByFormula: `{ID}='${m.author.id + "-" + m.guild.id}'`,
+          })
           .all();
         if (checkPerson.length == 0) {
           m.reply("yOUUUu HAvEbvveVe 0 point you fuggin loozer");

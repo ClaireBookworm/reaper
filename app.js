@@ -166,8 +166,8 @@ client.on("message", async (m) => {
         }
 
         if (person.length > 0 && newNumber > person[0].get("WinCount")) {
-          //m.reply("CONGRATS YOU WONNNNNNN!! The final rankings are:\n\n");
-          //m.channel.send(await getBoard(m));
+          m.reply("CONGRATS YOU WONNNNNNN!! The final rankings are:\n\n");
+          m.channel.send(await getBoard(m));
 
           let people = await base("People")
             .select({

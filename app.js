@@ -135,7 +135,7 @@ client.on("message", async (m) => {
         } else {
           if (now - person[0].get("Last") < 43200) {
             m.reply(
-              `NOOOO you need to wait 12 hours. So fair you have waited ${new Date(
+              `Nuh uh! You need to wait 12 hours. So fair you have waited ${new Date(
                 (now - person[0].get("Last")) * 1000
               )
                 .toISOString()
@@ -195,12 +195,12 @@ client.on("message", async (m) => {
           })
           .all();
         if (checkPerson.length == 0) {
-          m.reply("yOUUUu HAvEbvveVe 0 point you fuggin loozer");
+          m.reply("You have 0 points! Git reapin' ya lazy loafer! ");
         } else {
           m.reply(
             `Theee has ${checkPerson[0].get(
               "Points"
-            )} points. I shall reappp YOU SOON mAHAHWHAGHW`
+            )} points. I shall reappp YOU SOON {insert evil laugh}`
           );
         }
         break;
